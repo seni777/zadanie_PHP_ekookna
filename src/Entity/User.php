@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -32,10 +34,18 @@ class User
     private ?string $homeNumber = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $appartmentNumber = null;
+    private ?int $apartmentNumber = null;
 
     #[ORM\Column(length: 255)]
     private ?string $postcode = null;
+
+    #[ORM\ManyToMany(targetEntity: Warehouse::class, inversedBy: 'users')]
+    private Collection $relation;
+
+    public function __construct()
+    {
+        $this->relation = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,14 +124,14 @@ class User
         return $this;
     }
 
-    public function getAppartmentNumber(): ?int
+    public function getApartmentNumber(): ?int
     {
-        return $this->appartmentNumber;
+        return $this->apartmentNumber;
     }
 
-    public function setAppartmentNumber(?int $appartmentNumber): self
+    public function setApartmentNumber(?int $apartmentNumber): self
     {
-        $this->appartmentNumber = $appartmentNumber;
+        $this->apartmentNumber = $apartmentNumber;
 
         return $this;
     }
@@ -134,6 +144,30 @@ class User
     public function setPostcode(string $postcode): self
     {
         $this->postcode = $postcode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Warehouse>
+     */
+    public function getRelation(): Collection
+    {
+        return $this->relation;
+    }
+
+    public function addRelation(Warehouse $relation): self
+    {
+        if (!$this->relation->contains($relation)) {
+            $this->relation->add($relation);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Warehouse $relation): self
+    {
+        $this->relation->removeElement($relation);
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\WarehouseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WarehouseRepository::class)]
@@ -21,6 +23,14 @@ class Warehouse
 
     #[ORM\Column]
     private ?int $warehouseNumber = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'relation')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -62,4 +72,38 @@ class Warehouse
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addRelation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeRelation($this);
+        }
+
+        return $this;
+    }
+
+    /*
+    public function __toString(): string
+    {
+        return $this->user;
+    }
+    */
 }
