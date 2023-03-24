@@ -42,9 +42,19 @@ class User
     #[ORM\ManyToMany(targetEntity: Warehouse::class, inversedBy: 'users')]
     private Collection $relation;
 
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    private Collection $role;
+
     public function __construct()
     {
         $this->relation = new ArrayCollection();
+        $this->role = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,6 +178,60 @@ class User
     public function removeRelation(Warehouse $relation): self
     {
         $this->relation->removeElement($relation);
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $userRole = $this ->getRoles();
+
+        foreach ($userRole as $userRole) {
+            $roles[] = $userRole->getRoleName();
+        }
+
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRole(): Collection
+    {
+        return $this->role;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->role->contains($role)) {
+            $this->role->add($role);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        $this->role->removeElement($role);
 
         return $this;
     }

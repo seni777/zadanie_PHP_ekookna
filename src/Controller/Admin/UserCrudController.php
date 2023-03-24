@@ -23,11 +23,13 @@ class UserCrudController extends AbstractCrudController
             TextField::new('firstName'),
             TextField::new('lastName'),
             TextField::new('email'),
+            TextField::new('password'),
             TextField::new('city'),
             TextField::new('street'),
             TextField::new('homeNumber'),
             TextField::new('apartmentNumber'),
             TextField::new('postcode'),
+            TextField::new('role'),
         ];
     }
 }
