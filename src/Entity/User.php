@@ -194,6 +194,7 @@ class User
         return $this;
     }
 
+    /*
     public function getRoles(): array
     {
         $userRole = $this ->getRoles();
@@ -204,7 +205,7 @@ class User
 
         return $this->roles;
     }
-
+    */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
